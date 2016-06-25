@@ -10,17 +10,17 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CountryCreator(request: Request[JsValue]) {
-  def create: (Country,Boolean) = {
+  def create: (Future[Country], Boolean) = {
 
     val parsedRequest = request.body.as[Map[String, JsValue]]
     val record = CountryRequestSerializer.toModel(parsedRequest("country"))
 
     if (CountryValidator.validate(record)) {
       Countries.create(record)
-      val countryFromDB = Await.result(Countries.findByTitle(record.title), 10 seconds)
+      val countryFromDB = Countries.findByTitle(record.title)
 
       (countryFromDB, true)
-    } else (record, false)
+    } else (Future { record }, false)
   }
 }
 

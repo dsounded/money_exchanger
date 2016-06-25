@@ -3,8 +3,8 @@ package serializers
 import play.api.libs.json.Json._
 import play.api.libs.json._
 import org.joda.time.DateTime
-import models._
 import java.sql.Timestamp
+import models.Country
 
 trait Timestamps {
   def timestampToDateTime(t: Timestamp): DateTime = new DateTime(t.getTime)
