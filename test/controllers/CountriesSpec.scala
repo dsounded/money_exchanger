@@ -2,18 +2,15 @@ import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json._
-import play.api.db._
 
 class CountriesSpec extends PlaySpec with OneAppPerTest {
   "Countries" should {
     "render the index page" in {
-      DB.withConnection("money_exchanger") {
-        val index = route(app, FakeRequest(GET, "/countries")).get
+      val index = route(app, FakeRequest(GET, "/countries")).get
 
-        status(index) mustBe OK
-        contentType(index) mustBe Some("application/json")
-        contentAsString(index) must include("countries")
-      }
+      status(index) mustBe OK
+      contentType(index) mustBe Some("application/json")
+      contentAsString(index) must include("countries")
     }
 
     "saves the record on create" in {

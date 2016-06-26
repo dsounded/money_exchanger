@@ -1,6 +1,5 @@
 package validators
 
-import scala.reflect.runtime.universe
 import models.{Errorable, Countries, CountriesTable, Country, QueryCommands}
 
 trait BaseValidator {

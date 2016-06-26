@@ -5,9 +5,9 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
 import play.api.Play
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class RichTable[T](tag: Tag, val name: String) extends Table[T](tag, name) {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -43,9 +43,9 @@ trait QueryCommands[T <: RichTable[A], A] {
   def none = dbConfig.db.run(records.filter(record => record.id.asColumnOf[Int] === -1).result.head)
 
   def exists(tableName: String, column: String, value: Any): Boolean = {
-    val query = dbConfig.db.run(sql"SELECT COUNT(id) from #$tableName WHERE #$column = ${value.toString};".as[Int])
+    val query = dbConfig.db.run(sql"SELECT COUNT(1) from #$tableName WHERE #$column = ${value.toString};".as[Int])
 
-    Await.result(query, 5 seconds).sum > 0
+    Await.result(query, 1 seconds).sum > 0
   }
 
   protected def findQuery(id: Long) = {
