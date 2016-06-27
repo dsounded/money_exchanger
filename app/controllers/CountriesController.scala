@@ -26,11 +26,13 @@ class CountriesController @Inject() extends Controller {
 
   def create = Action.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
-    val (body, root, status) = responder.create(CountryCreator.create(request), "country")
+    responder.create(CountryCreator.create(request), "country").flatMap { response =>
+      val (body, root, status) = response
 
-    body match {
-      case Left(b) => b.map(b => Status(status)(Json.obj(root -> Json.toJson(b))))
-      case Right(eb) => eb.map(b => Status(status)(Json.obj(root -> Json.toJson(b))))
+      body match {
+        case Left(b) => b.map(b => Status(status)(Json.obj(root -> Json.toJson(b))))
+        case Right(eb) => eb.map(b => Status(status)(Json.obj(root -> Json.toJson(b))))
+      }
     }
   }
 }

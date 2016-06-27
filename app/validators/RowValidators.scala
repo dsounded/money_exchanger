@@ -1,6 +1,8 @@
 package validators
 
 import models.{Errorable, Countries, CountriesTable, Country, QueryCommands}
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait BaseValidator {
   implicit def anyToString(a: Any): String = a.toString
@@ -21,13 +23,15 @@ object PersistenceValidator extends BaseValidator{
 object UniquenessValidator extends BaseValidator{
   val errorText = "value has already been taken"
 
-  def validate[A <: Errorable](searcher: QueryCommands[_,_], record: A, field: String, row: String): Boolean = {
+  def validate[A <: Errorable](searcher: QueryCommands[_,_], record: A, field: String, row: String): Future[Boolean] = {
     val tableName = searcher.tableName
 
-    if (searcher.exists(tableName, field, row)) {
-      record.addError(field -> errorText)
+    searcher.exists(tableName, field, row).map { result =>
+      if (result) {
+        record.addError(field -> errorText)
 
-      false
-    } else true
+        false
+      } else true
+    }
   }
 }

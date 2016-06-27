@@ -9,10 +9,12 @@ class Responder[A <: Errorable] {
   val Created = 201
   val BadRequest = 400
 
-  type TypedRespond = (Either[Future[A], Future[Map[String,String]]], String, Int)
-  def create(data: (Future[A], Boolean), rootName: String): TypedRespond = {
-    val (record, isSuccess) = data
+  type TypedRespond = Future[(Either[Future[A], Future[Map[String,String]]], String, Int)]
+  def create(data: Future[(Future[A], Boolean)], rootName: String): TypedRespond = {
+    data.map { d =>
+      val (record, isSuccess) = d
 
-    if (isSuccess) (Left(record), rootName, Created) else (Right(record.map(r => r.errors)), "errors", BadRequest)
+      if (isSuccess) (Left(record), rootName, Created) else (Right(record.map(r => r.errors)), "errors", BadRequest)
+    }
   }
 }
