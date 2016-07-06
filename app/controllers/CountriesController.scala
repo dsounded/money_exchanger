@@ -30,8 +30,8 @@ class CountriesController @Inject() extends Controller {
       val (body, root, status) = response
 
       body match {
-        case Left(b) => b.map(b => Status(status)(Json.obj(root -> Json.toJson(b))))
-        case Right(eb) => eb.map(b => Status(status)(Json.obj(root -> Json.toJson(b))))
+        case Left(recordBody) => recordBody.map(theRecordBody => Status(status)(Json.obj(root -> Json.toJson(theRecordBody))))
+        case Right(errorBody) => errorBody.map(theErrorBody => Status(status)(Json.obj(root -> Json.toJson(theErrorBody))))
       }
     }
   }
