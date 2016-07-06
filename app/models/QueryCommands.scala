@@ -1,12 +1,13 @@
 package models
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.MySQLDriver.api._
+
 import play.api.Play
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 abstract class RichTable[T](tag: Tag, val name: String) extends Table[T](tag, name) {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)

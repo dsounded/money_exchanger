@@ -3,11 +3,14 @@ package controllers
 import javax.inject._
 import play.api._
 import play.api.mvc._
-import scala.concurrent._
+
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.json._
+
+import play.api.libs.json.Json
+
 import models.{Countries,Country}
-import services.CountryCreator
+import services.{CountryCreator, CountryDestroyer}
 import responders.Responder
 
 /**
@@ -34,5 +37,16 @@ class CountriesController @Inject() extends Controller {
         case Right(errorBody) => errorBody.map(theErrorBody => Status(status)(Json.obj(root -> Json.toJson(theErrorBody))))
       }
     }
+  }
+
+  def destroy(id: Long) = Action.async {
+    val responder = new Responder[Country]
+    responder.destroy(CountryDestroyer.destroy(id)).map { response =>
+      response match {
+        case Left(status) =>         Status(status)
+        case Right((obj, status)) => Status(status)(Json.obj(obj._1 -> Json.toJson(obj._2)))
+      }
+    }
+
   }
 }

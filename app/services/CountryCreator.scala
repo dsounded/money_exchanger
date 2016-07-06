@@ -1,12 +1,13 @@
 package services
 
-import play.api.libs.json._
-import play.api.mvc._
+import play.api.libs.json.JsValue
+import play.api.mvc.Request
+
 import validators.CountryValidator
 import serializers.CountryRequestSerializer
 import models.{Country, Countries}
-import scala.concurrent._
-import scala.concurrent.duration._
+
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CountryCreator(request: Request[JsValue]) {
