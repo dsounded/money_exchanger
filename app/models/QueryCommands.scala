@@ -42,10 +42,10 @@ trait QueryCommands[T <: RichTable[A], A] {
 
   def none = dbConfig.db.run(records.filter(record => record.id.asColumnOf[Int] === -1).result.head)
 
-  def exists(tableName: String, column: String, value: Any): Future[Boolean] = {
-    val query = dbConfig.db.run(sql"SELECT COUNT(1) from #$tableName WHERE #$column = ${value.toString};".as[Int])
+  def exists(id: Long = 0, tableName: String, column: String, value: Any): Future[Boolean] = {
+    val query = dbConfig.db.run(sql"SELECT id from #$tableName WHERE #$column = ${value.toString};".as[Int])
 
-    query.map(_.sum > 0)
+    query.map(theQuery => !theQuery.isEmpty && !theQuery.contains(id))
   }
 
   protected def findQuery(id: Long) = {

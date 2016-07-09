@@ -26,7 +26,7 @@ object UniquenessValidator extends BaseValidator{
   def validate[A <: Errorable](searcher: QueryCommands[_,_], record: A, field: String, row: String): Future[Boolean] = {
     val tableName = searcher.tableName
 
-    searcher.exists(tableName, field, row).map { result =>
+    searcher.exists(record.id, tableName, field, row).map { result =>
       if (result) {
         record.addError(field -> errorText)
 

@@ -3,6 +3,8 @@ package models
 import collection.mutable.{ Map => MutableMap }
 
 trait Errorable {
+  def id: Long
+
   private var errorsList = MutableMap.empty[String,Set[String]]
 
   def errors = errorsList

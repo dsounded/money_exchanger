@@ -10,9 +10,15 @@ import play.api.data._
 import utils.TimeUtil
 import serializers.{Timestamps => TimestampSerializer}
 
-case class Country(id: Long = 0, title: String, abbreviation: String, isActive: Boolean = true, createdAt: Timestamp = TimeUtil.now) extends Errorable
+case class Country(id: Long = 0, title: String, abbreviation: String, isActive: Boolean = true, createdAt: Timestamp = TimeUtil.now) extends Errorable with Defaultable
 
-object Country extends TimestampSerializer
+object Country extends TimestampSerializer {
+  def default = {
+    val country = new Country(title = "", abbreviation = "")
+    country.setDefault
+    country
+  }
+}
 
 class CountriesTable(tag: Tag) extends RichTable[Country](tag, "Countries") {
   def title =        column[String]("title")

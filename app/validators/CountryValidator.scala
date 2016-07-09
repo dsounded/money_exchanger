@@ -12,4 +12,16 @@ object CountryValidator {
           isAbbrUnique   <- UniquenessValidator.validate[Country](Countries, record, "abbreviation", record.abbreviation)
     } yield isTitlePersist && isAbbrPersist && isTitleUnique && isAbbrUnique
   }
+
+  def validate(record: Future[Option[Country]]): Future[Option[(Future[(Boolean, Country)])]] = {
+    record.map { theRecord =>
+      theRecord.map { existingRecord =>
+        for { isTitlePersist <- Future.successful { PersistenceValidator.validate[Country](existingRecord, "title", existingRecord.title) }
+              isAbbrPersist  <- Future.successful { PersistenceValidator.validate[Country](existingRecord, "abbreviation", existingRecord.abbreviation) }
+              isTitleUnique  <- UniquenessValidator.validate[Country](Countries, existingRecord, "title", existingRecord.title)
+              isAbbrUnique   <- UniquenessValidator.validate[Country](Countries, existingRecord, "abbreviation", existingRecord.abbreviation)
+        } yield (isTitlePersist && isAbbrPersist && isTitleUnique && isAbbrUnique, existingRecord)
+      }
+    }
+  }
 }

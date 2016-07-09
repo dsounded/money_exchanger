@@ -24,4 +24,16 @@ class Responder[A <: Errorable] {
   def destroy(data: Future[Boolean]): Future[Either[Int, ((String, String), Int)]] = {
     data.map(theData => if (theData) Left(NoContent) else Right((NotFoundRecord -> NotFound)))
   }
+
+  type UpdateTypedRespond = Future[Future[Either[Int, (MutableMap[String,Set[String]], String, Int)]]]
+  def update(record: Future[Future[(Boolean, Country)]]): UpdateTypedRespond = {
+    record.map { theRecord =>
+      theRecord.map { theValidationWithObject =>
+        val (isValid, theExistingRecord) = theValidationWithObject
+        if (isValid) {
+          Left(NoContent)
+        } else if (theExistingRecord.isDefault) Left(NotFound) else Right(theExistingRecord.errors, "errors", BadRequest)
+      }
+    }
+  }
 }
