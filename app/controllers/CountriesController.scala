@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 
 import models.{Countries,Country}
-import services.{CountryCreator, CountryDestroyer}
+import services.{CountryCreator, CountryDestroyer, CountryUpdater}
 import responders.Responder
 
 /**
@@ -47,6 +47,21 @@ class CountriesController @Inject() extends Controller {
         case Right((obj, status)) => Status(status)(Json.obj(obj._1 -> Json.toJson(obj._2)))
       }
     }
+  }
 
+  def update(id: Long) = Action.async(BodyParsers.parse.json) { implicit request =>
+    val responder = new Responder[Country]
+    responder.update(CountryUpdater.update(id, request)) flatMap { response =>
+      response map { theResponse =>
+        theResponse match {
+          case Left(status) => Status(status)
+          case Right(responseTuple) => {
+            val (errorBody, root, status) = responseTuple
+
+            Status(status)(Json.obj(root -> Json.toJson(errorBody)))
+          }
+        }
+      }
+    }
   }
 }

@@ -22,7 +22,7 @@ class CountryCreator(request: Request[JsValue]) {
         val countryFromDB = Countries.findByTitle(record.title)
 
         (countryFromDB, true)
-      } else (Future { record }, false)
+      } else (Future.successful { record }, false)
     }
   }
 }
