@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 
 import models.{Countries,Country}
-import services.{CountryCreator, CountryDestroyer, CountryUpdater}
+import services.country.{Creator => CountryCreator, Destroyer => CountryDestroyer, Updater => CountryUpdater}
 import responders.Responder
 
 /**

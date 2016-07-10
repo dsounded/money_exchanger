@@ -1,10 +1,12 @@
-package validators
+package validators.country
 
 import models.{Country, CountriesTable, Countries}
+import validators.{PersistenceValidator, UniquenessValidator}
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object CountryValidator {
+object Validator {
   def validate(record: Country): Future[Boolean] = {
     for { isTitlePersist <- Future.successful { PersistenceValidator.validate[Country](record, "title", record.title) }
           isAbbrPersist  <- Future.successful { PersistenceValidator.validate[Country](record, "abbreviation", record.abbreviation) }

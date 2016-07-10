@@ -1,16 +1,16 @@
-package services
+package services.country
 
 import play.api.libs.json.JsValue
 import play.api.mvc.Request
 
 import models.{Countries, Country}
-import serializers.CountryRequestSerializer
-import validators.CountryValidator
+import serializers.country.{RequestSerializer => CountryRequestSerializer}
+import validators.country.{Validator => CountryValidator}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CountryUpdater(id: Long, request: Request[JsValue]) {
+class Updater(id: Long, request: Request[JsValue]) {
   def update: Future[Future[(Boolean, Country)]] = {
     val parsedRequest = request.body.as[Map[String, JsValue]]
 
@@ -32,9 +32,9 @@ class CountryUpdater(id: Long, request: Request[JsValue]) {
   }
 }
 
-object CountryUpdater {
+object Updater {
   def update(id: Long, request: Request[JsValue]) = {
-    val updater = new CountryUpdater(id, request)
+    val updater = new Updater(id, request)
     updater.update
   }
 }
