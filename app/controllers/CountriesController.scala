@@ -27,6 +27,18 @@ class CountriesController @Inject() extends Controller {
     }
   }
 
+  def show(id: Long) = Action.async {
+    val responder = new Responder[Country]
+    responder.show(Countries.find(id), "country").map { theResponse =>
+      val(body, root, status) = theResponse
+
+      body match {
+        case Left(recordBody) => Status(status)(Json.obj(root -> Json.toJson(recordBody)))
+        case Right(errorBody) => Status(status)(Json.obj(root -> Json.toJson(errorBody)))
+      }
+    }
+  }
+
   def create = Action.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
     responder.create(CountryCreator.create(request), "country").flatMap { response =>
