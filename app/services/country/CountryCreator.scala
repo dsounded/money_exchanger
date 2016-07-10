@@ -16,7 +16,7 @@ class Creator(request: Request[JsValue]) {
     val parsedRequest = request.body.as[Map[String, JsValue]]
     val record = CountryRequestSerializer.toModel(parsedRequest("country"))
 
-    CountryValidator.validate(record).map { validator =>
+    CountryValidator.validate(record) map { validator =>
       if (validator) {
         Countries.create(record)
         val countryFromDB = Countries.findByTitle(record.title)
