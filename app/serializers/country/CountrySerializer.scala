@@ -1,4 +1,4 @@
-package serializers
+package serializers.country
 
 import scala.util.Try
 import scala.concurrent.Future
@@ -9,7 +9,7 @@ import play.api.libs.functional.syntax._
 
 import models._
 
-object CountryRequestSerializer {
+object  RequestSerializer {
   val DefaultValue = ""
 
   def toModel(request: JsValue): Country = {

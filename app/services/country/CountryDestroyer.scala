@@ -1,17 +1,17 @@
-package services
+package services.country
 
 import models.Countries
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CountryDestroyer(id: Long) {
+class Destroyer(id: Long) {
   def destroy = Countries.destroy(id)
 }
 
-object CountryDestroyer {
+object Destroyer {
   def destroy(id: Long): Future[Boolean] = {
-    val destroyer = new CountryDestroyer(id)
+    val destroyer = new Destroyer(id)
     destroyer.destroy.map(result => result)
   }
 
