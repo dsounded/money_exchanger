@@ -21,5 +21,21 @@ class CountriesSpec extends PlaySpec with OneAppPerTest {
       contentType(create) mustBe Some("application/json")
       contentAsString(create) must include("country")
     }
+
+    "deleting countries" should {
+      "returns 404 if no such record" in {
+        val request = FakeRequest(DELETE, "/countries/200")
+        val destroy = route(app, request).get
+
+        status(destroy) mustBe NOT_FOUND
+      }
+
+      "returns 204 if successfully deleted" in {
+        val request = FakeRequest(DELETE, "/countries/1")
+        val destroy = route(app, request).get
+
+        status(destroy) mustBe NO_CONTENT
+      }
+    }
   }
 }
