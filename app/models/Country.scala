@@ -1,12 +1,10 @@
 package models
 
 import java.sql.Timestamp
-import scala.concurrent.Future
+
 import play.api.db.slick.DatabaseConfigProvider
-import slick.driver.JdbcProfile
-import play.api.Play
 import slick.driver.MySQLDriver.api._
-import play.api.data._
+
 import utils.TimeUtil
 import serializers.{Timestamps => TimestampSerializer}
 
