@@ -21,7 +21,7 @@ class CountriesSpec extends PlaySpec with BeforeAndAfterAll {
   }
 
   "Countries" should {
-    "render the index page" in {
+    "render the index response" in {
       val index = route(app, FakeRequest(GET, "/countries")).get
 
       status(index) mustBe OK

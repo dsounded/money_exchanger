@@ -13,10 +13,6 @@ import models.{Countries,Country}
 import services.country.{Creator => CountryCreator, Destroyer => CountryDestroyer, Updater => CountryUpdater}
 import responders.Responder
 
-/**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
 @Singleton
 class CountriesController @Inject() extends Controller {
   def index = Action.async {
