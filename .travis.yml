@@ -2,7 +2,7 @@ language: scala
 scala:
   - 2.11.7
 services:
- - mysql
+  - mysql
 before_script:
   - mysql -e 'create database money_exchanger_test;'
 jdk:

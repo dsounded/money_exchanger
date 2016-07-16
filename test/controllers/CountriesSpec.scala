@@ -30,7 +30,6 @@ class CountriesSpec extends PlaySpec with BeforeAndAfterAll {
     }
 
     "saves the record on create" in {
-      //DatabaseCleaner.clean(List("Countries"))
       val request = FakeRequest(POST, "/countries").withJsonBody(Json.parse("""{ "country": {"title":"Germany", "abbreviation":"GER"} }"""))
       val create = route(app, request).get
 
