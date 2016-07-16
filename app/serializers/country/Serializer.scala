@@ -9,7 +9,7 @@ import play.api.libs.functional.syntax._
 
 import models._
 
-object  RequestSerializer {
+object RequestSerializer {
   val DefaultValue = ""
 
   def toModel(request: JsValue): Country = {
