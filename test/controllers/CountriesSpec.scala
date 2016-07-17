@@ -7,7 +7,7 @@ import play.api.test.Helpers._
 
 import play.api.libs.json._
 
-import test.helpers.DatabaseCleaner
+import test.helpers.{DatabaseCleaner, DatabaseInserter}
 
 import play.api.Play
 
@@ -15,8 +15,15 @@ class CountriesSpec extends PlaySpec with BeforeAndAfterAll {
   val app = new GuiceApplicationBuilder().build
 
   override def beforeAll() {
-    Play.start(app)
+    Play.maybeApplication match {
+      case Some(app) => ()
+      case _ => Play.start(app)
+    }
 
+    DatabaseCleaner.clean(List("Countries"))
+  }
+
+  override def afterAll() {
     DatabaseCleaner.clean(List("Countries"))
   }
 
@@ -47,7 +54,11 @@ class CountriesSpec extends PlaySpec with BeforeAndAfterAll {
       }
 
       "returns 204 if successfully deleted" in {
-        val request = FakeRequest(DELETE, "/countries/1")
+        val id = 11
+        DatabaseCleaner.clean(List("Countries"))
+        DatabaseInserter.insert("Countries", id, List("Denmark", "DEN", "1", "2016-10-10"))
+
+        val request = FakeRequest(DELETE, s"/countries/$id")
         val destroy = route(app, request).get
 
         status(destroy) mustBe NO_CONTENT

@@ -23,4 +23,16 @@ class UsersController @Inject() extends Controller {
       Ok(Json.obj("users" -> Json.toJson(theUsers)))
     }
   }
+
+  def show(id: Long) = Action.async {
+    val responder = new Responder[User]
+    responder.show(Users.find(id), "user").map { theResponse =>
+      val(body, root, status) = theResponse
+
+      body match {
+        case Left(recordBody) => Status(status)(Json.obj(root -> Json.toJson(recordBody)))
+        case Right(errorBody) => Status(status)(Json.obj(root -> Json.toJson(errorBody)))
+      }
+    }
+  }
 }
