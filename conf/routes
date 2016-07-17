@@ -6,6 +6,7 @@ PATCH   /countries/:id              controllers.CountriesController.update(id: L
 PUT     /countries/:id              controllers.CountriesController.update(id: Long)
 
 GET     /users                      controllers.UsersController.index
+GET     /users/:id                  controllers.UsersController.show(id: Long)
 # POST    /users                      controllers.UsersController.create
 
 # Map static resources from the /public folder to the /assets URL path
