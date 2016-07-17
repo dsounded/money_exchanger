@@ -1,6 +1,6 @@
 package validators.country
 
-import models.{Country, CountriesTable, Countries}
+import models.{Country, Countries}
 import validators.{PersistenceValidator, UniquenessValidator}
 
 import scala.concurrent.Future

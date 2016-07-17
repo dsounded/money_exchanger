@@ -8,6 +8,8 @@ CREATE TABLE `Users` (
   `firstName` VARCHAR(225) NOT NULL,
   `lastName` VARCHAR(225) NOT NULL,
   `password` VARCHAR(225) NOT NULL,
+  `authToken` VARCHAR(225) NOT NULL,
+  `authTokenCreatedAt` DATETIME NOT NULL,
   `role` ENUM('User', 'Moderator', 'Admin') NOT NULL,
   `cityId` INT(11) NOT NULL,
   `phone` VARCHAR(225) NOT NULL,

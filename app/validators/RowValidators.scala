@@ -24,6 +24,8 @@ object UniquenessValidator extends BaseValidator{
   val errorText = "value has already been taken"
 
   def validate[A <: Errorable](searcher: QueryCommands[_,_], record: A, field: String, row: String): Future[Boolean] = {
+    if (row isEmpty) return Future.successful(true)
+
     val tableName = searcher.tableName
 
     searcher.exists(record.id, tableName, field, row).map { result =>
