@@ -45,8 +45,6 @@ class UsersSpec extends PlaySpec with BeforeAndAfterAll {
         val id = 10
         DatabaseInserter.insert("Users", id, List("john-doe@gmail.com", "John", "Doe", "password", "User", "1", "999999", "2016-01-01"))
 
-        import models._
-        println(Users.all)
         val show = route(app, FakeRequest(GET, s"/users/$id")).get
 
         status(show) mustBe OK
