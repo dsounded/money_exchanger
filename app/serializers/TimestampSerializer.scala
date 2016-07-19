@@ -30,6 +30,14 @@ trait JsonFormatters {
   implicit val jsonCountryFormat = Json.format[Country]
   implicit val jsonUserWriter = new Writes[User] {
     def writes(user: User) = {
+      defaultObjectCreator(user)
+    }
+
+    def writesForCreate(user: User) = {
+      defaultObjectCreator(user) + ("authToken" -> Json.toJson(user.authToken))
+    }
+
+    def defaultObjectCreator(user: User) = {
       Json.obj("id" -> user.id,
                "email" -> user.email,
                "firstName" -> user.firstName,
