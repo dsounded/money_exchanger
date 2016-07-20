@@ -13,8 +13,15 @@ import models.{Countries,Country}
 import services.country.{Creator => CountryCreator, Destroyer => CountryDestroyer, Updater => CountryUpdater}
 import responders.Responder
 
+import io.swagger.annotations._
+
+@Api(value = "/countries", description = "Countries CRUD", consumes="application/json")
 @Singleton
 class CountriesController @Inject() extends Controller {
+  @ApiOperation(httpMethod = "GET", value = "Get all countries", response = classOf[Country], responseContainer = "List")
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Success")
+  ))
   def index = Action.async {
     val countries = Countries.all
 
@@ -23,6 +30,11 @@ class CountriesController @Inject() extends Controller {
     }
   }
 
+  @ApiOperation(httpMethod = "GET", value = "Get country by ID", response = classOf[Country])
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Success"),
+    new ApiResponse(code = 404, message = "Not Found")
+  ))
   def show(id: Long) = Action.async {
     val responder = new Responder[Country]
     responder.show(Countries.find(id), "country").map { theResponse =>
@@ -35,6 +47,15 @@ class CountriesController @Inject() extends Controller {
     }
   }
 
+  @ApiOperation(httpMethod = "POST", value = "Create country", response = classOf[Country])
+  @ApiResponses(Array(
+    new ApiResponse(code = 201, message = "Created"),
+    new ApiResponse(code = 400, message = "Bad Request")
+  ))
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "country[title]", value = "Country's title", required = true, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "country[abbreviation]", value = "Country's abbreviation", required = true, dataType = "String", paramType = "body")
+  ))
   def create = Action.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
     responder.create(CountryCreator.create(request), "country").flatMap { response =>
@@ -47,6 +68,11 @@ class CountriesController @Inject() extends Controller {
     }
   }
 
+  @ApiOperation(httpMethod = "DELETE", value = "Destroy country")
+  @ApiResponses(Array(
+    new ApiResponse(code = 204, message = "No Content"),
+    new ApiResponse(code = 404, message = "Not Found")
+  ))
   def destroy(id: Long) = Action.async {
     val responder = new Responder[Country]
     responder.destroy(CountryDestroyer.destroy(id)).map { response =>
@@ -57,6 +83,15 @@ class CountriesController @Inject() extends Controller {
     }
   }
 
+  @ApiOperation(httpMethod = "PUT/PATCH", value = "Update country")
+  @ApiResponses(Array(
+    new ApiResponse(code = 204, message = "No Content"),
+    new ApiResponse(code = 404, message = "Not Found")
+  ))
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "country[title]", value = "Country's title", required = false, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "country[abbreviation]", value = "Country's abbreviation", required = false, dataType = "String", paramType = "body")
+  ))
   def update(id: Long) = Action.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
     responder.update(CountryUpdater.update(id, request)) flatMap { response =>

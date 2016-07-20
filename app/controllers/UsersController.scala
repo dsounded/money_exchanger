@@ -13,9 +13,15 @@ import models.{Users,User}
 import services.user.{Creator => UserCreator}
 import responders.Responder
 
+import io.swagger.annotations._
 
+@Api(value = "/users", description = "Users manipulation", consumes="application/json")
 @Singleton
 class UsersController @Inject() extends Controller {
+  @ApiOperation(httpMethod = "GET", value = "Get all users", response = classOf[User], responseContainer = "List")
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Success")
+  ))
   def index = Action.async {
     val users = Users.all
 
@@ -24,6 +30,11 @@ class UsersController @Inject() extends Controller {
     }
   }
 
+  @ApiOperation(httpMethod = "GET", value = "Get user by ID", response = classOf[User])
+  @ApiResponses(Array(
+    new ApiResponse(code = 200, message = "Success"),
+    new ApiResponse(code = 404, message = "Not Found")
+  ))
   def show(id: Long) = Action.async {
     val responder = new Responder[User]
     responder.show(Users.find(id), "user").map { theResponse =>
@@ -36,6 +47,21 @@ class UsersController @Inject() extends Controller {
     }
   }
 
+  @ApiOperation(httpMethod = "POST", value = "Create user", response = classOf[User])
+  @ApiResponses(Array(
+    new ApiResponse(code = 201, message = "Created"),
+    new ApiResponse(code = 404, message = "Bad Request")
+    ))
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "user[email]", value = "User's email", required = true, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "user[password]", value = "User's password", required = true, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "user[firstName]", value = "User's first name", required = false, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "user[lastName]", value = "User's last name", required = false, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "user[role]", value = "User's role", required = false, dataType = "String", paramType = "body",
+                         allowableValues = "User, Moderator, User"),
+    new ApiImplicitParam(name = "user[cityId]", value = "User's city ID", required = false, dataType = "Int", paramType = "body"),
+    new ApiImplicitParam(name = "user[phone]", value = "User's phone", required = false, dataType = "String", paramType = "body")
+  ))
   def create = Action.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[User]
     responder.create(UserCreator.create(request), "user").flatMap { response =>
