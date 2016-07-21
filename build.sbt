@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   cache,
   "com.typesafe.play" %% "play-slick" % "2.0.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "2.0.0",
+  "com.wix" %% "accord-core" % "0.5",
   "mysql" % "mysql-connector-java" % "5.1.36",
   "com.github.t3hnar" %% "scala-bcrypt" % "2.6",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,

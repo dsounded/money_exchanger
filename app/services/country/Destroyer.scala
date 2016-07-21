@@ -15,5 +15,5 @@ object Destroyer {
     destroyer.destroy.map(result => result)
   }
 
-  implicit def intToBoolean(i: Int): Boolean = if (i == 0) false else true
+  implicit def intToBoolean(i: Int): Boolean = i != 0
 }

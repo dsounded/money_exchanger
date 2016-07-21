@@ -1,28 +1,40 @@
 package validators.country
 
-import models.{Country, Countries}
-import validators.{PersistenceValidator, UniquenessValidator}
+import com.wix.accord.dsl._
+import com.wix.accord.{validate => validateCountry}
+import models.{Countries, Country}
+import validators.BaseValidator
+import validators.BaseValidator.validateWithErrors
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Validator {
+  implicit val countryValidator = validator[Country] { country =>
+    country.title is notEmpty
+    country.abbreviation is notEmpty
+  }
+
   def validate(record: Country): Future[Boolean] = {
-    for { isTitlePersist <- Future.successful { PersistenceValidator.validate[Country](record, "title", record.title) }
-          isAbbrPersist  <- Future.successful { PersistenceValidator.validate[Country](record, "abbreviation", record.abbreviation) }
-          isTitleUnique  <- UniquenessValidator.validate[Country](Countries, record, "title", record.title)
-          isAbbrUnique   <- UniquenessValidator.validate[Country](Countries, record, "abbreviation", record.abbreviation)
-    } yield isTitlePersist && isAbbrPersist && isTitleUnique && isAbbrUnique
+    for {
+      accordValidation <- validateWithErrors(validateCountry(record), record)
+      customValidation <- customValidation(record)
+    } yield accordValidation && customValidation
+  }
+
+  private def customValidation(record: Country): Future[Boolean] = {
+    for {
+      titleValidation <- BaseValidator.unique(Countries, record, "title", record.title)
+      abbreviationValidation <- BaseValidator.unique(Countries, record, "abbreviation", record.abbreviation)
+    } yield titleValidation && abbreviationValidation
   }
 
   def validate(record: Future[Option[Country]]): Future[Option[(Future[(Boolean, Country)])]] = {
     record.map { theRecord =>
       theRecord.map { existingRecord =>
-        for { isTitlePersist <- Future.successful { PersistenceValidator.validate[Country](existingRecord, "title", existingRecord.title) }
-              isAbbrPersist  <- Future.successful { PersistenceValidator.validate[Country](existingRecord, "abbreviation", existingRecord.abbreviation) }
-              isTitleUnique  <- UniquenessValidator.validate[Country](Countries, existingRecord, "title", existingRecord.title)
-              isAbbrUnique   <- UniquenessValidator.validate[Country](Countries, existingRecord, "abbreviation", existingRecord.abbreviation)
-        } yield (isTitlePersist && isAbbrPersist && isTitleUnique && isAbbrUnique, existingRecord)
+        validate(existingRecord) map { isValid =>
+          (isValid, existingRecord)
+        }
       }
     }
   }

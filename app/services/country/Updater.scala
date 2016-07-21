@@ -17,10 +17,8 @@ class Updater(id: Long, request: Request[JsValue]) {
     val country = Countries.find(id)
     val updatedCountry = CountryRequestSerializer.toModel(parsedRequest("country"), country)
 
-    val validator = CountryValidator.validate(updatedCountry)
-    validator map { theValidator =>
-      val safeValidator = theValidator.getOrElse(Future.successful((false, Country.default)))
-      safeValidator map { existingValidator =>
+    CountryValidator.validate(updatedCountry) map { validator =>
+      validator.getOrElse(Future.successful((false, Country.default))) map { existingValidator =>
         val (isValid, updatedRecord) = existingValidator
 
         if (isValid) {
