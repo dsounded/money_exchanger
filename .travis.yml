@@ -7,3 +7,5 @@ before_script:
   - mysql -e 'create database money_exchanger_test;'
 jdk:
   - oraclejdk8
+script:
+  - sh spec_runner.sh
