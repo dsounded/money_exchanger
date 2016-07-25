@@ -29,15 +29,6 @@ class CountriesShowSpec extends PlaySpec with BeforeAndAfterAll {
     DatabaseCleaner.clean(List("Countries"))
   }
 
-  "renders country" in {
-    val request = FakeRequest(GET, "/countries/88")
-    val show = route(app, request).get
-
-    status(show) mustBe OK
-    contentType(show) mustBe Some("application/json")
-    contentAsString(show) must include("country")
-  }
-
   "renders error" in {
     val request = FakeRequest(GET, "/countries/20")
     val show = route(app, request).get
@@ -46,5 +37,14 @@ class CountriesShowSpec extends PlaySpec with BeforeAndAfterAll {
     contentType(show) mustBe Some("application/json")
     contentAsString(show) must include("error")
     contentAsString(show) must include("not found")
+  }
+
+  "renders country" in {
+    val request = FakeRequest(GET, "/countries/88")
+    val show = route(app, request).get
+
+    status(show) mustBe OK
+    contentType(show) mustBe Some("application/json")
+    contentAsString(show) must include("country")
   }
 }

@@ -9,5 +9,8 @@ GET     /users                      controllers.UsersController.index
 GET     /users/:id                  controllers.UsersController.show(id: Long)
 POST    /users                      controllers.UsersController.create
 
+# Swagger:
+GET     /api-docs                   controllers.ApiHelpController.getResources
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
