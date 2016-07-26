@@ -50,4 +50,6 @@ object Users extends QueryCommands[UsersTable, User] {
   }
 
   def findByEmail(email: String) = dbConfig.db.run(records.filter(_.email === email).result.head)
+
+  def findByAuthToken(token: String) = dbConfig.db.run(records.filter(_.authToken === token).result.headOption)
 }

@@ -11,8 +11,11 @@ class Responder[A <: Errorable] {
   val BadRequest = 400
   val NoContent = 204
   val NotFound = 404
+  val Forbidden = 403
   val NotFoundRecord = Set("not found")
   val ErrorRootName = "errors"
+  val ExpiredTokenError = Set("token has expired")
+  val UserNotFound = Set("token is not valid")
 
   type CreateTypedRespond = Future[(Either[Future[A], Future[MutableMap[String,Set[String]]]], String, Int)]
   def create(data: Future[(Future[A], Boolean)], rootName: String): CreateTypedRespond = {

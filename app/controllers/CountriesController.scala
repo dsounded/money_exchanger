@@ -15,14 +15,20 @@ import responders.Responder
 
 import io.swagger.annotations._
 
+import actions.AuthorizationAction
+
 @Api(value = "/countries", description = "Countries CRUD", consumes="application/json")
 @Singleton
 class CountriesController @Inject() extends Controller {
   @ApiOperation(httpMethod = "GET", value = "Get all countries", response = classOf[Country], responseContainer = "List")
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "Success")
+    new ApiResponse(code = 200, message = "Success"),
+    new ApiResponse(code = 403, message = "Forbidden")
   ))
-  def index = Action.async {
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "Authorization", value = "Users's auth token", required = true, dataType = "String", paramType = "header")
+  ))
+  def index = AuthorizationAction.async {
     val countries = Countries.all
 
     countries.map { country =>
