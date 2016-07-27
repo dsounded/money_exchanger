@@ -7,7 +7,7 @@ import play.api.test.Helpers._
 
 import play.api.libs.json._
 
-import test.helpers.{DatabaseCleaner, DatabaseInserter}
+import test.helpers.DatabaseCleaner
 
 import play.api.Play
 
@@ -41,7 +41,7 @@ class UsersCreateSpec extends PlaySpec with BeforeAndAfterAll {
     "returns 201 if request is acceptable" in {
       DatabaseCleaner.clean(List("Users"))
 
-      val request = FakeRequest(POST, "/users").withJsonBody(Json.parse("""{ "user": {"email":"john-doe@gmail.com", "password":"pass"} }"""))
+      val request = FakeRequest(POST, "/users").withHeaders("Authorization" -> "token").withJsonBody(Json.parse("""{ "user": {"email":"john-doe@gmail.com", "password":"pass"} }"""))
       val create = route(app, request).get
 
       status(create) mustBe CREATED

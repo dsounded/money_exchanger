@@ -11,6 +11,8 @@ import test.helpers.{DatabaseCleaner, DatabaseInserter}
 
 import play.api.Play
 
+import utils.TimeUtil.now
+
 class CountriesShowSpec extends PlaySpec with BeforeAndAfterAll {
   val app = new GuiceApplicationBuilder().build
 
@@ -21,7 +23,7 @@ class CountriesShowSpec extends PlaySpec with BeforeAndAfterAll {
     }
 
     DatabaseCleaner.clean(List("Countries"))
-
+    DatabaseInserter.insert("Users", 12, List("john-doe_index@gmail.com", "John", "Doe", "password", "token", now.toString, "User", "1", "999999", "2016-01-01"))
     DatabaseInserter.insert("Countries", 88, List("Austria", "AU", "0", "2015-01-01"))
   }
 
@@ -30,7 +32,7 @@ class CountriesShowSpec extends PlaySpec with BeforeAndAfterAll {
   }
 
   "renders error" in {
-    val request = FakeRequest(GET, "/countries/20")
+    val request = FakeRequest(GET, "/countries/20").withHeaders("Authorization" -> "token")
     val show = route(app, request).get
 
     status(show) mustBe NOT_FOUND
@@ -40,7 +42,7 @@ class CountriesShowSpec extends PlaySpec with BeforeAndAfterAll {
   }
 
   "renders country" in {
-    val request = FakeRequest(GET, "/countries/88")
+    val request = FakeRequest(GET, "/countries/88").withHeaders("Authorization" -> "token")
     val show = route(app, request).get
 
     status(show) mustBe OK

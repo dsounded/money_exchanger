@@ -11,6 +11,8 @@ import test.helpers.{DatabaseCleaner, DatabaseInserter}
 
 import play.api.Play
 
+import utils.TimeUtil.now
+
 class CountriesDestroySpec extends PlaySpec with BeforeAndAfterAll {
   val app = new GuiceApplicationBuilder().build
 
@@ -21,6 +23,7 @@ class CountriesDestroySpec extends PlaySpec with BeforeAndAfterAll {
     }
 
     DatabaseCleaner.clean(List("Countries"))
+    DatabaseInserter.insert("Users", 12, List("john-doe_index@gmail.com", "John", "Doe", "password", "token", now.toString, "User", "1", "999999", "2016-01-01"))
     DatabaseInserter.insert("Countries", 11, List("Denmark", "DEN", "1", "2016-10-10"))
   }
 
@@ -30,14 +33,14 @@ class CountriesDestroySpec extends PlaySpec with BeforeAndAfterAll {
 
   "deleting countries" should {
     "returns 404 if no such record" in {
-      val request = FakeRequest(DELETE, "/countries/200")
+      val request = FakeRequest(DELETE, "/countries/200").withHeaders("Authorization" -> "token")
       val destroy = route(app, request).get
 
       status(destroy) mustBe NOT_FOUND
     }
 
     "returns 204 if successfully deleted" in {
-      val request = FakeRequest(DELETE, "/countries/11")
+      val request = FakeRequest(DELETE, "/countries/11").withHeaders("Authorization" -> "token")
       val destroy = route(app, request).get
 
       status(destroy) mustBe NO_CONTENT

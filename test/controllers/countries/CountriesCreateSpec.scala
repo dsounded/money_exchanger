@@ -11,6 +11,8 @@ import test.helpers.{DatabaseCleaner, DatabaseInserter}
 
 import play.api.Play
 
+import utils.TimeUtil.now
+
 class CountriesCreateSpec extends PlaySpec with BeforeAndAfterAll {
   val app = new GuiceApplicationBuilder().build
 
@@ -20,6 +22,7 @@ class CountriesCreateSpec extends PlaySpec with BeforeAndAfterAll {
       case _ => Play.start(app)
     }
 
+    DatabaseInserter.insert("Users", 12, List("john-doe_index@gmail.com", "John", "Doe", "password", "token", now.toString, "User", "1", "999999", "2016-01-01"))
     DatabaseCleaner.clean(List("Countries"))
   }
 
@@ -28,7 +31,7 @@ class CountriesCreateSpec extends PlaySpec with BeforeAndAfterAll {
   }
 
   "saves the record on create" in {
-    val request = FakeRequest(POST, "/countries").withJsonBody(Json.parse("""{ "country": {"title":"Germany", "abbreviation":"GER"} }"""))
+    val request = FakeRequest(POST, "/countries").withJsonBody(Json.parse("""{ "country": {"title":"Germany", "abbreviation":"GER"} }""")).withHeaders("Authorization" -> "token")
     val create = route(app, request).get
 
     status(create) mustBe CREATED

@@ -16,6 +16,9 @@ class Responder[A <: Errorable] {
   val ErrorRootName = "errors"
   val ExpiredTokenError = Set("token has expired")
   val UserNotFound = Set("token is not valid")
+  val EmailNotFound = Set("email is invalid")
+  val WrongPassword = Set("wrong password")
+  val UserRootName = "user"
 
   type CreateTypedRespond = Future[(Either[Future[A], Future[MutableMap[String,Set[String]]]], String, Int)]
   def create(data: Future[(Future[A], Boolean)], rootName: String): CreateTypedRespond = {
@@ -43,12 +46,18 @@ class Responder[A <: Errorable] {
   }
 
   type ShowTypedRespond = Future[(Either[A, Set[String]], String, Int)]
-  def show(record: Future[Option[A]], rooName: String): ShowTypedRespond = {
-    record map { theRecord =>
-      theRecord match {
-        case Some(existingRecord) => (Left(existingRecord), rooName, Success)
-        case _                    => (Right(NotFoundRecord), ErrorRootName, NotFound)
-      }
+  def show(record: Future[Option[A]], rootName: String): ShowTypedRespond = {
+    record map {
+      case Some(existingRecord) => (Left(existingRecord), rootName, Success)
+      case _                    => (Right(NotFoundRecord), ErrorRootName, NotFound)
+    }
+  }
+
+  type AuthRespond = Future[(Either[Object, Set[String]], String, Int)]
+  def authorize(authInfo: Future[(Object, Set[String])]): AuthRespond = {
+    authInfo map {
+      case (user, errors) if errors isEmpty => (Left(user), UserRootName, Created)
+      case (_, errors) => (Right(errors), ErrorRootName, BadRequest)
     }
   }
 }
