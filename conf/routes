@@ -9,6 +9,8 @@ GET     /users                      controllers.UsersController.index
 GET     /users/:id                  controllers.UsersController.show(id: Long)
 POST    /users                      controllers.UsersController.create
 
+POST    /session                    controllers.SessionController.create
+
 # Swagger:
 GET     /api-docs                   controllers.ApiHelpController.getResources
 

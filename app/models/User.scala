@@ -49,7 +49,7 @@ object Users extends QueryCommands[UsersTable, User] {
     super.create(record.copy(password = record.password.bcrypt))
   }
 
-  def findByEmail(email: String) = dbConfig.db.run(records.filter(_.email === email).result.head)
+  def findByEmail(email: String) = dbConfig.db.run(records.filter(_.email === email).result.headOption)
 
   def findByAuthToken(token: String) = dbConfig.db.run(records.filter(_.authToken === token).result.headOption)
 }

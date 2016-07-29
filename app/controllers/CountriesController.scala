@@ -39,9 +39,13 @@ class CountriesController @Inject() extends Controller {
   @ApiOperation(httpMethod = "GET", value = "Get country by ID", response = classOf[Country])
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Success"),
-    new ApiResponse(code = 404, message = "Not Found")
+    new ApiResponse(code = 404, message = "Not Found"),
+    new ApiResponse(code = 403, message = "Forbidden")
   ))
-  def show(id: Long) = Action.async {
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "Authorization", value = "Users's auth token", required = true, dataType = "String", paramType = "header")
+  ))
+  def show(id: Long) = AuthorizationAction.async {
     val responder = new Responder[Country]
     responder.show(Countries.find(id), "country").map { theResponse =>
       val(body, root, status) = theResponse
@@ -56,13 +60,15 @@ class CountriesController @Inject() extends Controller {
   @ApiOperation(httpMethod = "POST", value = "Create country", response = classOf[Country])
   @ApiResponses(Array(
     new ApiResponse(code = 201, message = "Created"),
-    new ApiResponse(code = 400, message = "Bad Request")
+    new ApiResponse(code = 400, message = "Bad Request"),
+    new ApiResponse(code = 403, message = "Forbidden")
   ))
   @ApiImplicitParams(Array(
     new ApiImplicitParam(name = "country[title]", value = "Country's title", required = true, dataType = "String", paramType = "body"),
-    new ApiImplicitParam(name = "country[abbreviation]", value = "Country's abbreviation", required = true, dataType = "String", paramType = "body")
+    new ApiImplicitParam(name = "country[abbreviation]", value = "Country's abbreviation", required = true, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "Authorization", value = "Users's auth token", required = true, dataType = "String", paramType = "header")
   ))
-  def create = Action.async(BodyParsers.parse.json) { implicit request =>
+  def create = AuthorizationAction.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
     responder.create(CountryCreator.create(request), "country").flatMap { response =>
       val (body, root, status) = response
@@ -77,38 +83,40 @@ class CountriesController @Inject() extends Controller {
   @ApiOperation(httpMethod = "DELETE", value = "Destroy country")
   @ApiResponses(Array(
     new ApiResponse(code = 204, message = "No Content"),
-    new ApiResponse(code = 404, message = "Not Found")
+    new ApiResponse(code = 404, message = "Not Found"),
+    new ApiResponse(code = 403, message = "Forbidden")
   ))
-  def destroy(id: Long) = Action.async {
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "Authorization", value = "Users's auth token", required = true, dataType = "String", paramType = "header")
+  ))
+  def destroy(id: Long) = AuthorizationAction.async {
     val responder = new Responder[Country]
-    responder.destroy(CountryDestroyer.destroy(id)).map { response =>
-      response match {
-        case Left(status) =>         Status(status)
-        case Right((obj, status)) => Status(status)(Json.obj(obj._1 -> Json.toJson(obj._2)))
-      }
+    responder.destroy(CountryDestroyer.destroy(id)).map {
+      case Left(status)         => Status(status)
+      case Right((obj, status)) => Status(status)(Json.obj(obj._1 -> Json.toJson(obj._2)))
     }
   }
 
   @ApiOperation(httpMethod = "PUT/PATCH", value = "Update country")
   @ApiResponses(Array(
     new ApiResponse(code = 204, message = "No Content"),
-    new ApiResponse(code = 404, message = "Not Found")
+    new ApiResponse(code = 404, message = "Not Found"),
+    new ApiResponse(code = 403, message = "Forbidden")
   ))
   @ApiImplicitParams(Array(
     new ApiImplicitParam(name = "country[title]", value = "Country's title", required = false, dataType = "String", paramType = "body"),
-    new ApiImplicitParam(name = "country[abbreviation]", value = "Country's abbreviation", required = false, dataType = "String", paramType = "body")
+    new ApiImplicitParam(name = "country[abbreviation]", value = "Country's abbreviation", required = false, dataType = "String", paramType = "body"),
+    new ApiImplicitParam(name = "Authorization", value = "Users's auth token", required = true, dataType = "String", paramType = "header")
   ))
-  def update(id: Long) = Action.async(BodyParsers.parse.json) { implicit request =>
+  def update(id: Long) = AuthorizationAction.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
     responder.update(CountryUpdater.update(id, request)) flatMap { response =>
-      response map { theResponse =>
-        theResponse match {
-          case Left(status) => Status(status)
-          case Right(responseTuple) => {
-            val (errorBody, root, status) = responseTuple
+      response map {
+        case Left(status) => Status(status)
+        case Right(responseTuple) => {
+          val (errorBody, root, status) = responseTuple
 
-            Status(status)(Json.obj(root -> Json.toJson(errorBody)))
-          }
+          Status(status)(Json.obj(root -> Json.toJson(errorBody)))
         }
       }
     }

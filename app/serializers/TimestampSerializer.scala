@@ -37,6 +37,10 @@ trait JsonFormatters {
       defaultObjectCreator(user) + ("authToken" -> Json.toJson(user.authToken))
     }
 
+    def writesForAuth(user: User) = {
+      Json.obj("authToken" -> Json.toJson(user.authToken))
+    }
+
     def defaultObjectCreator(user: User) = {
       Json.obj("id" -> user.id,
                "email" -> user.email,

@@ -29,7 +29,7 @@ class UsersIndexSpec extends PlaySpec with BeforeAndAfterAll {
 
   "renders the index response" in {
     DatabaseInserter.insert("Users", 12, List("john-doe_index@gmail.com", "John", "Doe", "password", "token", "2016-01-01", "User", "1", "999999", "2016-01-01"))
-    val index = route(app, FakeRequest(GET, "/users")).get
+    val index = route(app, FakeRequest(GET, "/users").withHeaders("Authorization" -> "token")).get
 
     status(index) mustBe OK
     contentType(index) mustBe Some("application/json")

@@ -19,7 +19,7 @@ class Creator(request: Request[JsValue]) {
     UserValidator.validate(record) map { validator =>
       if (validator) {
         Users.create(record)
-        val userFromDB = Users.findByEmail(record.email)
+        val userFromDB = Users.findByEmail(record.email).map(_.get)
 
         (userFromDB, true)
       } else (Future.successful(record), false)

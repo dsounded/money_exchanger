@@ -21,6 +21,7 @@ class UsersShowSpec extends PlaySpec with BeforeAndAfterAll {
     }
 
     DatabaseCleaner.clean(List("Users"))
+    DatabaseInserter.insert("Users", 10, List("john-doe@gmail.com", "John", "Doe", "password", "token", "2016-01-01", "User", "1", "999999", "2016-01-01"))
   }
 
   override def afterAll() {
@@ -29,7 +30,7 @@ class UsersShowSpec extends PlaySpec with BeforeAndAfterAll {
 
   "show response" should {
     "responses 404 if there is no such user" in {
-      val show = route(app, FakeRequest(GET, "/users/1")).get
+      val show = route(app, FakeRequest(GET, "/users/1").withHeaders("Authorization" -> "token")).get
 
       status(show) mustBe NOT_FOUND
       contentType(show) mustBe Some("application/json")
@@ -37,10 +38,7 @@ class UsersShowSpec extends PlaySpec with BeforeAndAfterAll {
     }
 
     "responses 200 if record exists" in {
-      val id = 10
-      DatabaseInserter.insert("Users", id, List("john-doe@gmail.com", "John", "Doe", "password", "token", "2016-01-01", "User", "1", "999999", "2016-01-01"))
-
-      val show = route(app, FakeRequest(GET, s"/users/$id")).get
+      val show = route(app, FakeRequest(GET, "/users/10").withHeaders("Authorization" -> "token")).get
 
       status(show) mustBe OK
       contentAsString(show) must include("user")
