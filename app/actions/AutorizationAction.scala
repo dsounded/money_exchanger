@@ -17,22 +17,27 @@ import play.api.libs.json.Json
 
 import java.security.cert.X509Certificate
 
+import access.Permissions
+
 object AuthorizationAction extends ActionBuilder[Request] {
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
     val header = request.headers.get("Authorization").getOrElse("")
 
     Logger.info(s"Authorization: $header")
 
-    getUser(header) flatMap {
+    getUser(header, RequestControllerInfo(request)) flatMap {
       case (user, error) if error isEmpty => block(AuthenticatedRequest(user, request))
       case (_, error)                     => Future.successful(Status(responder.Forbidden)(Json.obj(responder.ErrorRootName -> Json.toJson(error))))
     }
   }
 
-  def getUser(header: String) = {
+  def getUser(header: String, permissions: (String, String)) = {
+    val (controller, action) = permissions
+
     Users.findByAuthToken(header) map {
+      case Some(user) if Permissions.canNot(user, controller, action) => (user, responder.NotAllowed)
       case Some(user) if Receptionist.canEnter(user) => (user, Set.empty)
-      case Some(user) => (user, Set.empty)
+      case Some(user) => (user, responder.ExpiredTokenError)
       case None => (Users.none, responder.UserNotFound)
     }
   }
@@ -57,5 +62,17 @@ object AuthorizationAction extends ActionBuilder[Request] {
       def clientCertificateChain = Some(Seq.empty[X509Certificate])
       def secure = true
     }
+  }
+
+  object RequestControllerInfo {
+    val ControllerTupleValue = "ROUTE_CONTROLLER"
+    val ActionTupleValue = "ROUTE_ACTION_METHOD"
+
+    def apply[A](request: Request[A]): (String, String) = {
+      (cleanControllerName(request.tags.filter { case (key, _) => key == ControllerTupleValue }.head._2),
+        request.tags.filter { case (key, _) => key == ActionTupleValue }.head._2)
+    }
+
+    private def cleanControllerName(name: String): String = name.replace("controllers.", "").replace("Controller", "")
   }
 }
