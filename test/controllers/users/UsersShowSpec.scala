@@ -11,6 +11,8 @@ import test.helpers.{DatabaseCleaner, DatabaseInserter}
 
 import play.api.Play
 
+import utils.TimeUtil.now
+
 class UsersShowSpec extends PlaySpec with BeforeAndAfterAll {
   val app = new GuiceApplicationBuilder().build
 
@@ -21,7 +23,7 @@ class UsersShowSpec extends PlaySpec with BeforeAndAfterAll {
     }
 
     DatabaseCleaner.clean(List("Users"))
-    DatabaseInserter.insert("Users", 10, List("john-doe@gmail.com", "John", "Doe", "password", "token", "2016-01-01", "User", "1", "999999", "2016-01-01"))
+    DatabaseInserter.insert("Users", 10, List("john-doe@gmail.com", "John", "Doe", "password", "token", now.toString, "User", "1", "999999", "2016-01-01"))
   }
 
   override def afterAll() {

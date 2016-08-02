@@ -22,7 +22,7 @@ class CountriesCreateSpec extends PlaySpec with BeforeAndAfterAll {
       case _ => Play.start(app)
     }
 
-    DatabaseInserter.insert("Users", 12, List("john-doe_index@gmail.com", "John", "Doe", "password", "token", now.toString, "User", "1", "999999", "2016-01-01"))
+    DatabaseInserter.insert("Users", 12, List("john-doe_index@gmail.com", "John", "Doe", "password", "token", now.toString, "Moderator", "1", "999999", "2016-01-01"))
     DatabaseCleaner.clean(List("Countries"))
   }
 

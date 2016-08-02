@@ -19,6 +19,7 @@ class Responder[A <: Errorable] {
   val EmailNotFound = Set("email is invalid")
   val WrongPassword = Set("wrong password")
   val UserRootName = "user"
+  val NotAllowed = Set("action is not allowed")
 
   type CreateTypedRespond = Future[(Either[Future[A], Future[MutableMap[String,Set[String]]]], String, Int)]
   def create(data: Future[(Future[A], Boolean)], rootName: String): CreateTypedRespond = {
