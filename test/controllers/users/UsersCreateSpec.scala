@@ -35,7 +35,7 @@ class UsersCreateSpec extends PlaySpec with BeforeAndAfterAll {
       status(create) mustBe BAD_REQUEST
       contentType(create) mustBe Some("application/json")
       contentAsString(create) must include("errors")
-      contentAsString(create) must include("\"email\":[\"can't be blank\"]")
+      contentAsString(create) must include("\"email\":[\"must not be empty\"]")
     }
 
     "returns 201 if request is acceptable" in {

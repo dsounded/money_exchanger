@@ -31,7 +31,7 @@ class Responder[A <: Errorable] {
   }
 
   def destroy(data: Future[Boolean]): Future[Either[Int, ((String, Set[String]), Int)]] = {
-    data.map(theData => if (theData) Left(NoContent) else Right(((ErrorRootName -> NotFoundRecord) -> NotFound)))
+    data.map(theData => if (theData) Left(NoContent) else Right((ErrorRootName -> NotFoundRecord) -> NotFound))
   }
 
   type UpdateTypedRespond = Future[Future[Either[Int, (MutableMap[String,Set[String]], String, Int)]]]
