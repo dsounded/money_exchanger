@@ -1,12 +1,11 @@
 package controllers
 
-import javax.inject._
+import javax.inject.{Inject, Singleton}
 
 import play.api._
 import play.api.mvc._
 
-import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.ExecutionContext
 
 import play.api.libs.json.Json
 
@@ -22,7 +21,7 @@ import actions.AuthorizationAction
 
 @Api(value = "/users", description = "Users manipulation", consumes="application/json")
 @Singleton
-class UsersController @Inject() extends Controller {
+class UsersController @Inject() (implicit val ec: ExecutionContext) extends Controller {
   @ApiOperation(httpMethod = "GET", value = "Get all users", response = classOf[User], responseContainer = "List")
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Success"),

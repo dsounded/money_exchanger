@@ -1,7 +1,6 @@
 package serializers.user
 
 import scala.util.Try
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.json._

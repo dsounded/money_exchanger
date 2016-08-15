@@ -1,5 +1,7 @@
 package services.country
 
+import javax.inject.Inject
+
 import play.api.libs.json.JsValue
 import play.api.mvc.Request
 
@@ -8,9 +10,9 @@ import serializers.country.{RequestSerializer => CountryRequestSerializer}
 import models.{Country, Countries}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
-class Creator(request: Request[JsValue]) {
+class Creator @Inject() (request: Request[JsValue])(implicit val ec: ExecutionContext) {
   def create: Future[(Future[Country], Boolean)] = {
 
     val parsedRequest = request.body.as[Map[String, JsValue]]
@@ -28,7 +30,7 @@ class Creator(request: Request[JsValue]) {
 }
 
 object Creator {
-  def create(request: Request[JsValue]) = {
+  def create(request: Request[JsValue])(implicit ec: ExecutionContext) = {
     val creator = new Creator(request)
 
     creator.create
