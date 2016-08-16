@@ -4,8 +4,7 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 
-import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.ExecutionContext
 
 import play.api.libs.json.Json
 
@@ -19,7 +18,7 @@ import actions.AuthorizationAction
 
 @Api(value = "/countries", description = "Countries CRUD", consumes="application/json")
 @Singleton
-class CountriesController @Inject() extends Controller {
+class CountriesController @Inject() (implicit ec: ExecutionContext) extends Controller {
   @ApiOperation(httpMethod = "GET", value = "Get all countries", response = classOf[Country], responseContainer = "List")
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "Success"),

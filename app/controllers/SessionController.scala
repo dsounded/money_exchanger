@@ -4,8 +4,7 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 
-import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import scala.concurrent.ExecutionContext
 
 import play.api.libs.json.Json
 
@@ -19,7 +18,7 @@ import io.swagger.annotations._
 
 @Api(value = "/session", description = "User auth", consumes="application/json")
 @Singleton
-class SessionController @Inject() extends Controller {
+class SessionController @Inject() (implicit val ec: ExecutionContext) extends Controller {
   @ApiOperation(httpMethod = "POST", value = "Create session", response = classOf[User])
   @ApiResponses(Array(
     new ApiResponse(code = 201, message = "Created"),
