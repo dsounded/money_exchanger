@@ -6,7 +6,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Request
 
 import validators.country.{Validator => CountryValidator}
-import serializers.country.{RequestSerializer => CountryRequestSerializer}
+import serializers.country.RequestSerializer.deserialize
 import models.{Country, Countries}
 
 import scala.concurrent.Future
@@ -14,9 +14,7 @@ import scala.concurrent.ExecutionContext
 
 class Creator @Inject() (request: Request[JsValue])(implicit val ec: ExecutionContext) {
   def create: Future[(Future[Country], Boolean)] = {
-
-    val parsedRequest = request.body.as[Map[String, JsValue]]
-    val record = CountryRequestSerializer.toModel(parsedRequest("country"))
+    val record = request.body.as[Country](deserialize())
 
     CountryValidator.validate(record) map { validator =>
       if (validator) {

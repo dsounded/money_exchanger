@@ -6,7 +6,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Request
 
 import validators.user.{Validator => UserValidator}
-import serializers.user.{RequestSerializer => UserRequestSerializer}
+import serializers.user.RequestSerializer.deserialize
 import models.{User, Users}
 
 import scala.concurrent.Future
@@ -14,9 +14,7 @@ import scala.concurrent.ExecutionContext
 
 class Creator @Inject() (request: Request[JsValue])(implicit ec: ExecutionContext) {
   def create: Future[(Future[User], Boolean)] = {
-
-    val parsedRequest = request.body.as[Map[String, JsValue]]
-    val record = UserRequestSerializer.toModel(parsedRequest("user"))
+    val record = request.body.as[User](deserialize)
 
     UserValidator.validate(record) map { validator =>
       if (validator) {
