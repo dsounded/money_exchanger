@@ -4,7 +4,7 @@ import scala.util.Try
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import play.api.libs.json._
+import play.api.libs.json.{Reads, __, JsValue}
 import play.api.libs.functional.syntax._
 
 import models.Country
@@ -12,17 +12,19 @@ import models.Country
 object RequestSerializer {
   val DefaultValue = ""
 
-  def toModel(request: JsValue): Country = {
-    val title = Try((request \ "title").as[String]).getOrElse(DefaultValue)
-    val abbreviation = Try((request \ "abbreviation").as[String]).getOrElse(DefaultValue)
+  def deserialize(id: Long = 0, defaultTitle: String = DefaultValue, defaultAbbr: String = DefaultValue): Reads[Country] = (
+    (__ \ 'country \ 'title).readNullable[String] and
+    (__ \ 'country \ 'abbreviation).readNullable[String]
+  )((titleOpt: Option[String], abbreviationOpt: Option[String]) => {
+     val title = titleOpt.getOrElse(defaultTitle)
+     val abbreviation = abbreviationOpt.getOrElse(defaultAbbr)
 
-    new Country(0, title, abbreviation, true)
-  }
+    Country(id, title, abbreviation, true)
+  })
 
-  def toModel(request: JsValue, record: Future[Option[Country]]): Future[Option[Country]] = {
-    record.map { theRecord =>
-      theRecord.map(exitingRecord => exitingRecord.copy(title = Try((request \ "title").as[String]).getOrElse(exitingRecord.title),
-                                                        abbreviation = Try((request \ "abbreviation").as[String]).getOrElse(exitingRecord.abbreviation)))
+  def deserialize(request: JsValue, record: Future[Option[Country]]): Future[Option[Country]] = {
+    record map { theRecord =>
+      theRecord.map(exitingRecord => request.as[Country](deserialize(exitingRecord.id, exitingRecord.title, exitingRecord.abbreviation)))
     }
   }
 }
