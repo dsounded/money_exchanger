@@ -1,13 +1,7 @@
-package serializers.user
+package users
 
 import play.api.libs.json.{__, Reads}
 import play.api.libs.functional.syntax._
-
-import enumerators.user.Role
-
-import models.User
-
-import services.user.Tokenizer
 
 import utils.TimeUtil
 

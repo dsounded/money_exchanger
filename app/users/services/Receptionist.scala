@@ -1,13 +1,12 @@
-package services.user
+package users
 
-import models.{User, Users}
 import utils.TimeUtil
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.util.Try
-import serializers.user.RequestSerializer.DefaultValue
+import users.RequestSerializer.DefaultValue
 
 import responders.Responder
 

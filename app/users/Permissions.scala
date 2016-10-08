@@ -1,8 +1,6 @@
-package access
+package users
 
-import enumerators.user.Role.{User => UserRole, Moderator, Admin}
-
-import models.User
+import users.Role.{User => UserRole, Moderator, Admin}
 
 object Permissions {
   val Permissions = Map(

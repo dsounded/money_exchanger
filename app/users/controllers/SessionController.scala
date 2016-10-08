@@ -1,4 +1,4 @@
-package controllers
+package users
 
 import javax.inject._
 import play.api._
@@ -9,10 +9,6 @@ import scala.concurrent.ExecutionContext
 import play.api.libs.json.Json
 
 import responders.Responder
-
-import models.User
-
-import services.user.Receptionist
 
 import io.swagger.annotations._
 

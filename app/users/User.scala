@@ -1,14 +1,15 @@
-package models
+package users
 
-import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.MySQLDriver.api._
 
 import utils.TimeUtil
 
 import java.sql.Timestamp
 
-import enumerators.user.{Role => UserRole}
-import serializers.JsonFormatters
+import users.{Role => UserRole}
+import converters.JsonFormatters
+
+import models.{Errorable, QueryCommands, Defaultable, RichTable}
 
 case class User(id: Long = 0, email: String, firstName: String, lastName: String,
                 role: UserRole.Value, password: String, authToken: String,

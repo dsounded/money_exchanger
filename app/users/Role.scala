@@ -1,4 +1,4 @@
-package enumerators.user
+package users
 
 object Role extends Enumeration {
   val User =      Value("User")
