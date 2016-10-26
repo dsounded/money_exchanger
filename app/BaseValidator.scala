@@ -1,15 +1,14 @@
 package validators
 
-import java.util.concurrent.TimeUnit
-
 import com.wix.accord.{NullSafeValidator, Result, Success, Failure, RuleViolation, GroupViolation}
 import com.wix.accord.ViolationBuilder._
 
 import models.{QueryCommands, Errorable}
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+
+import models.Error
 
 object BaseValidator {
   val UniqueError = "value has already been taken"
@@ -19,7 +18,7 @@ object BaseValidator {
 
     searcher.exists(record.id, searcher.tableName, column, value).map { result =>
       if (result) {
-        record.addError(column -> UniqueError)
+        record.addError(Error(column, UniqueError))
 
         false
       } else true
@@ -30,8 +29,8 @@ object BaseValidator {
     validationResult match {
       case Success => Future.successful(true)
       case Failure(violations) => violations.foreach {
-        case RuleViolation(value, message, Some(field)) => record.addError(field -> message)
-        case GroupViolation(value, message, Some(field), children) => record.addError(field -> message)
+        case RuleViolation(value, message, Some(field)) => record.addError(Error(field.toString, message))
+        case GroupViolation(value, message, Some(field), children) => record.addError(Error(field.toString, message))
         case _ => ???
       }
     }
