@@ -1,4 +1,4 @@
-package serializers
+package converters
 
 import play.api.libs.json.Json._
 import play.api.libs.json._
@@ -6,9 +6,10 @@ import play.api.libs.json._
 import org.joda.time.DateTime
 import java.sql.Timestamp
 
-import models.{Country, User}
+import countries.Country
+import users.User
 
-import enumerators.user.{Role => UserRole}
+import users.{Role => UserRole}
 
 trait JsonFormatters {
   def timestampToDateTime(t: Timestamp): DateTime = new DateTime(t.getTime)

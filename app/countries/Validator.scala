@@ -1,8 +1,8 @@
-package validators.country
+package countries
 
 import com.wix.accord.dsl._
 import com.wix.accord.{validate => validateCountry}
-import models.{Countries, Country}
+
 import validators.BaseValidator
 import validators.BaseValidator.validateWithErrors
 

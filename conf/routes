@@ -1,15 +1,15 @@
-GET     /countries                  controllers.CountriesController.index
-GET     /countries/:id              controllers.CountriesController.show(id: Long)
-POST    /countries                  controllers.CountriesController.create
-DELETE  /countries/:id              controllers.CountriesController.destroy(id: Long)
-PATCH   /countries/:id              controllers.CountriesController.update(id: Long)
-PUT     /countries/:id              controllers.CountriesController.update(id: Long)
+GET     /countries                  countries.CountriesController.index
+GET     /countries/:id              countries.CountriesController.show(id: Long)
+POST    /countries                  countries.CountriesController.create
+DELETE  /countries/:id              countries.CountriesController.destroy(id: Long)
+PATCH   /countries/:id              countries.CountriesController.update(id: Long)
+PUT     /countries/:id              countries.CountriesController.update(id: Long)
 
-GET     /users                      controllers.UsersController.index
-GET     /users/:id                  controllers.UsersController.show(id: Long)
-POST    /users                      controllers.UsersController.create
+GET     /users                      users.UsersController.index
+GET     /users/:id                  users.UsersController.show(id: Long)
+POST    /users                      users.UsersController.create
 
-POST    /session                    controllers.SessionController.create
+POST    /session                    users.SessionController.create
 
 # Swagger:
 GET     /api-docs                   controllers.ApiHelpController.getResources

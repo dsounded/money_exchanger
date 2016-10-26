@@ -2,11 +2,14 @@ package responders
 
 import javax.inject.Inject
 
+import countries.Country
+import users.User
+
 import models._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-import collection.mutable.{ Map => MutableMap }
+import collection.mutable.{Map => MutableMap}
 
 class Responder[A <: Errorable] @Inject() (implicit val ex: ExecutionContext){
   val Success = 200

@@ -1,4 +1,4 @@
-package models
+package countries
 
 import java.sql.Timestamp
 
@@ -6,7 +6,9 @@ import slick.driver.MySQLDriver.api._
 
 import utils.TimeUtil
 
-import serializers.JsonFormatters
+import converters.JsonFormatters
+
+import models.{Errorable, QueryCommands, Defaultable, RichTable}
 
 case class Country(id: Long = 0, title: String, abbreviation: String, isActive: Boolean = true, createdAt: Timestamp = TimeUtil.now) extends Errorable with Defaultable
 

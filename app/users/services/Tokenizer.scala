@@ -1,4 +1,4 @@
-package services.user
+package users
 
 object Tokenizer {
   def make(buildingFields: List[Any]) = {

@@ -1,4 +1,4 @@
-package controllers
+package users
 
 import javax.inject.{Inject, Singleton}
 
@@ -9,15 +9,9 @@ import scala.concurrent.ExecutionContext
 
 import play.api.libs.json.Json
 
-import models.{User, Users}
-
-import services.user.{Creator => UserCreator}
-
 import responders.Responder
 
 import io.swagger.annotations._
-
-import actions.AuthorizationAction
 
 @Api(value = "/users", description = "Users manipulation", consumes="application/json")
 @Singleton
@@ -76,7 +70,7 @@ class UsersController @Inject() (implicit val ec: ExecutionContext) extends Cont
   ))
   def create = Action.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[User]
-    responder.create(UserCreator.create(request), "user").flatMap { response =>
+    responder.create(Actions.create(request), "user").flatMap { response =>
       val (body, root, status) = response
 
       body match {

@@ -1,4 +1,4 @@
-package controllers
+package countries
 
 import javax.inject._
 import play.api._
@@ -8,13 +8,11 @@ import scala.concurrent.ExecutionContext
 
 import play.api.libs.json.Json
 
-import models.{Countries,Country}
-import services.country.{Creator => CountryCreator, Destroyer => CountryDestroyer, Updater => CountryUpdater}
 import responders.Responder
 
 import io.swagger.annotations._
 
-import actions.AuthorizationAction
+import users.AuthorizationAction
 
 @Api(value = "/countries", description = "Countries CRUD", consumes="application/json")
 @Singleton
@@ -69,7 +67,7 @@ class CountriesController @Inject() (implicit ec: ExecutionContext) extends Cont
   ))
   def create = AuthorizationAction.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
-    responder.create(CountryCreator.create(request), "country").flatMap { response =>
+    responder.create(Actions.create(request), "country").flatMap { response =>
       val (body, root, status) = response
 
       body match {
@@ -90,7 +88,7 @@ class CountriesController @Inject() (implicit ec: ExecutionContext) extends Cont
   ))
   def destroy(id: Long) = AuthorizationAction.async {
     val responder = new Responder[Country]
-    responder.destroy(CountryDestroyer.destroy(id)).map {
+    responder.destroy(Actions.destroy(id)).map {
       case Left(status)         => Status(status)
       case Right((obj, status)) => Status(status)(Json.obj(obj._1 -> Json.toJson(obj._2)))
     }
@@ -109,7 +107,7 @@ class CountriesController @Inject() (implicit ec: ExecutionContext) extends Cont
   ))
   def update(id: Long) = AuthorizationAction.async(BodyParsers.parse.json) { implicit request =>
     val responder = new Responder[Country]
-    responder.update(CountryUpdater.update(id, request)) flatMap { response =>
+    responder.update(Actions.update(id, request)) flatMap { response =>
       response map {
         case Left(status) => Status(status)
         case Right(responseTuple) => {

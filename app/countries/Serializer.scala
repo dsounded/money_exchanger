@@ -1,13 +1,10 @@
-package serializers.country
+package countries
 
-import scala.util.Try
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.json.{Reads, __, JsValue}
 import play.api.libs.functional.syntax._
-
-import models.Country
 
 object RequestSerializer {
   val DefaultValue = ""

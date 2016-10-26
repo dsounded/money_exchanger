@@ -1,4 +1,4 @@
-package actions
+package users
 
 import play.api.mvc.{ActionBuilder, Result, Request}
 import play.api.Logger
@@ -7,17 +7,11 @@ import play.api.mvc.Results.Status
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-import models.Users
-
 import responders.Responder
-
-import services.user.Receptionist
 
 import play.api.libs.json.Json
 
 import java.security.cert.X509Certificate
-
-import access.Permissions
 
 object AuthorizationAction extends ActionBuilder[Request] {
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {

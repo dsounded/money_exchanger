@@ -1,9 +1,7 @@
-package validators.user
+package users
 
 import com.wix.accord.dsl._
 import com.wix.accord.{validate => validateUser}
-
-import models.{User, Users}
 
 import validators.BaseValidator
 import validators.BaseValidator.validateWithErrors
