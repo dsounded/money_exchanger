@@ -61,12 +61,13 @@ object AuthorizationAction extends ActionBuilder[Request] {
   object RequestControllerInfo {
     val ControllerTupleValue = "ROUTE_CONTROLLER"
     val ActionTupleValue = "ROUTE_ACTION_METHOD"
+    val Delimiter = '.'
 
     def apply[A](request: Request[A]): (String, String) = {
       (cleanControllerName(request.tags.filter { case (key, _) => key == ControllerTupleValue }.head._2),
         request.tags.filter { case (key, _) => key == ActionTupleValue }.head._2)
     }
 
-    private def cleanControllerName(name: String): String = name.replace("controllers.", "").replace("Controller", "")
+    private def cleanControllerName(name: String): String = name.split(Delimiter).last.replace("Controller", "")
   }
 }
